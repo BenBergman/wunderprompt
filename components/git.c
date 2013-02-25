@@ -34,7 +34,11 @@ int get_git_dir(char *git_dir) {
           fclose(fd);
 
           if (strncmp(line, "gitdir: ", 8) == 0) {
-            strcpy(cwd + strlen(cwd)-4, line + 8);
+            if (strncmp(line + 8, "/", 1) == 0) {
+              strcpy(cwd, line + 8);
+            } else {
+              strcpy(cwd + strlen(cwd)-4, line + 8);
+            }
           }
           strcpy(git_dir, cwd);
           return 0;
