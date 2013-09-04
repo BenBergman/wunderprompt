@@ -66,7 +66,10 @@ long git_last_activity(char *git_dir) {
     while(fgets(line, 1023, fd) != NULL);
     fclose(fd);
 
-    timestamp = (index(line, '>') + 2);
+    timestamp = index(line, '>');
+    if (timestamp == NULL)
+      return 0;
+    timestamp += 2;
     timestamp[10] = 0;
 
     return atol(timestamp);
@@ -75,6 +78,9 @@ long git_last_activity(char *git_dir) {
 
 void git_activity_time_elapsed(char *ret, char *git_dir) {
   long last_activity = git_last_activity(git_dir);
+
+  if (last_activity == 0)
+    return;
 
   long diff = time(NULL) - last_activity;
   int diff_min = (int)(diff / 60);
